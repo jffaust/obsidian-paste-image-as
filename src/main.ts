@@ -1,4 +1,4 @@
-import { Plugin } from 'obsidian';
+import { Plugin, MarkdownView, Editor, MarkdownFileInfo } from 'obsidian';
 import { DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab } from "./settings";
 import { ImageProcessor } from './image-processor';
 
@@ -38,26 +38,59 @@ export default class MyPlugin extends Plugin {
 			}
 		});
 
-		// Listen to paste events
-		this.registerDomEvent(document, 'paste', this.handlePaste.bind(this));
+		// Listen to editor paste events (for markdown)
+		this.registerEvent(
+			this.app.workspace.on('editor-paste', this.handleEditorPaste.bind(this))
+		);
+
+		// Listen to global paste events (for canvas and other non-markdown views)
+		this.registerDomEvent(document, 'paste', this.handleGlobalPaste.bind(this));
 	}
 
-	async handlePaste(event: ClipboardEvent) {
+	async handleEditorPaste(evt: ClipboardEvent, editor: Editor, info: MarkdownView | MarkdownFileInfo) {
 		if (!this.settings.overrideDefaultPaste) {
 			return;
 		}
 
-		if (!event.clipboardData) {
+		if (!evt.clipboardData) {
 			return;
 		}
 
-		const items = Array.from(event.clipboardData.items);
+		const items = Array.from(evt.clipboardData.items);
+		for (const item of items) {
+			if (item.type.startsWith("image/")) {
+				const blob = item.getAsFile();
+				if (blob) {
+					evt.preventDefault(); 
+					this.imageProcessor.processImageBlob(blob);
+					return;
+				}
+			}
+		}
+	}
+
+	async handleGlobalPaste(evt: ClipboardEvent) {
+		if (!this.settings.overrideDefaultPaste) {
+			return;
+		}
+
+		// Skip if the active view is Markdown, because handleEditorPaste will handle it
+		const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
+		if (activeView) {
+			return;
+		}
+
+		if (!evt.clipboardData) {
+			return;
+		}
+
+		const items = Array.from(evt.clipboardData.items);
 		for (const item of items) {
 			if (item.type.startsWith("image/")) {
 				const blob = item.getAsFile();
 				if (blob) {
 					// Only prevent default if we actually have an image blob to process
-					event.preventDefault(); 
+					evt.preventDefault(); 
 					this.imageProcessor.processImageBlob(blob);
 					return; // Exit after processing the first image
 				}
