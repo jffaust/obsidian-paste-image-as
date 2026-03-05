@@ -1,6 +1,10 @@
-import { Plugin, MarkdownView, Editor, MarkdownFileInfo } from 'obsidian';
-import { DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab } from "./settings";
-import { ImageProcessor } from './image-processor';
+import { Plugin, MarkdownView, Editor, MarkdownFileInfo } from "obsidian";
+import {
+	DEFAULT_SETTINGS,
+	MyPluginSettings,
+	SampleSettingTab,
+} from "./settings";
+import { ImageProcessor } from "./image-processor";
 
 export default class MyPlugin extends Plugin {
 	settings: MyPluginSettings;
@@ -8,7 +12,7 @@ export default class MyPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		
+
 		this.imageProcessor = new ImageProcessor(this.app, this);
 
 		// Add settings tab
@@ -16,8 +20,8 @@ export default class MyPlugin extends Plugin {
 
 		// Register a command that can be invoked via hotkey
 		this.addCommand({
-			id: 'paste-image-as-configured-format',
-			name: 'Paste image from clipboard as configured format',
+			id: "paste-image-as-configured-format",
+			name: "Paste image as configured format",
 			callback: async () => {
 				try {
 					const clipboardItems = await navigator.clipboard.read();
@@ -26,7 +30,9 @@ export default class MyPlugin extends Plugin {
 							if (type.startsWith("image/")) {
 								const blob = await clipboardItem.getType(type);
 								if (blob) {
-									await this.imageProcessor.processImageBlob(blob);
+									await this.imageProcessor.processImageBlob(
+										blob,
+									);
 									return;
 								}
 							}
@@ -35,19 +41,30 @@ export default class MyPlugin extends Plugin {
 				} catch (err) {
 					console.error("Failed to read clipboard contents:", err);
 				}
-			}
+			},
 		});
 
 		// Listen to editor paste events (for markdown)
 		this.registerEvent(
-			this.app.workspace.on('editor-paste', this.handleEditorPaste.bind(this))
+			this.app.workspace.on(
+				"editor-paste",
+				this.handleEditorPaste.bind(this),
+			),
 		);
 
 		// Listen to global paste events (for canvas and other non-markdown views)
-		this.registerDomEvent(document, 'paste', this.handleGlobalPaste.bind(this));
+		this.registerDomEvent(
+			document,
+			"paste",
+			this.handleGlobalPaste.bind(this),
+		);
 	}
 
-	async handleEditorPaste(evt: ClipboardEvent, editor: Editor, info: MarkdownView | MarkdownFileInfo) {
+	async handleEditorPaste(
+		evt: ClipboardEvent,
+		editor: Editor,
+		info: MarkdownView | MarkdownFileInfo,
+	) {
 		if (!this.settings.overrideDefaultPaste) {
 			return;
 		}
@@ -61,7 +78,7 @@ export default class MyPlugin extends Plugin {
 			if (item.type.startsWith("image/")) {
 				const blob = item.getAsFile();
 				if (blob) {
-					evt.preventDefault(); 
+					evt.preventDefault();
 					this.imageProcessor.processImageBlob(blob);
 					return;
 				}
@@ -90,7 +107,7 @@ export default class MyPlugin extends Plugin {
 				const blob = item.getAsFile();
 				if (blob) {
 					// Only prevent default if we actually have an image blob to process
-					evt.preventDefault(); 
+					evt.preventDefault();
 					this.imageProcessor.processImageBlob(blob);
 					return; // Exit after processing the first image
 				}
@@ -98,11 +115,14 @@ export default class MyPlugin extends Plugin {
 		}
 	}
 
-	onunload() {
-	}
+	onunload() {}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			await this.loadData(),
+		);
 	}
 
 	async saveSettings() {
