@@ -4,8 +4,8 @@
 	"version": "0.1.0",
 	"minAppVersion": "0.15.0",
 	"description": "Allows pasting images in a specific format.",
-	"author": "jfjfaust",
-	"authorUrl": "https://github.com/jfjfaust",
+	"author": "jffaust",
+	"authorUrl": "https://github.com/jffaust",
 	"fundingUrl": "https://ko-fi.com/jffaust",
 	"isDesktopOnly": false
 }
