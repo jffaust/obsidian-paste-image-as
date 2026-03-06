@@ -34,8 +34,7 @@ export class PasteImageAsSettingTab extends PluginSettingTab {
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOption("jpeg", "JPEG")
-					// eslint-disable-next-line obsidianmd/ui/sentence-case
-					.addOption("webp", "WebP")
+					.addOption("webp", "WEBP")
 					.setValue(this.plugin.settings.targetFormat)
 					.onChange(async (value) => {
 						this.plugin.settings.targetFormat = value as
@@ -62,11 +61,9 @@ export class PasteImageAsSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			// eslint-disable-next-line obsidianmd/ui/sentence-case
-			.setName("WebP quality")
+			.setName("Webp quality")
 			.setDesc(
-				// eslint-disable-next-line obsidianmd/ui/sentence-case
-				"Compression quality for WebP images (0 to 1). Higher is better quality but larger file size.",
+				"Compression quality for webp images (0 to 1). Higher is better quality but larger file size.",
 			)
 			.addSlider((slider) =>
 				slider
