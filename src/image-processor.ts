@@ -116,7 +116,9 @@ export class ImageProcessor {
 	): Promise<TFile | null> {
 		const fileName = `PastedImage_${this.getFormattedDate()}.${extension}`;
 
-		let attachmentFolder = (this.app.vault as VaultWithConfig).getConfig("attachmentFolderPath") as string | undefined;
+		let attachmentFolder = (this.app.vault as VaultWithConfig).getConfig(
+			"attachmentFolderPath",
+		) as string | undefined;
 
 		let folderPath: string = "";
 
@@ -181,8 +183,18 @@ export class ImageProcessor {
 			// Extract the filename from the path
 			const filename = file.name;
 
-			// TODO: Respect the user's Obsidian settings for inserting links (wikilinks vs markdown links, use absolute vs relative paths, etc.)
-			editor.replaceRange(`![[${filename}]]`, cursor);
+			let useMarkdownLinks = (
+				this.app.vault as VaultWithConfig
+			).getConfig("useMarkdownLinks") as boolean | undefined;
+			if (useMarkdownLinks === undefined) {
+				useMarkdownLinks = true;
+			}
+
+			if (useMarkdownLinks) {
+				editor.replaceRange(`![${filename}](${file.path})`, cursor);
+			} else {
+				editor.replaceRange(`![[${filename}]]`, cursor);
+			}
 		} else if (activeView.getViewType() === "canvas") {
 			const canvasView = activeView as CanvasView;
 			const canvas = canvasView.canvas;

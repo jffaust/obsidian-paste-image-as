@@ -21,7 +21,7 @@ export default class PasteImageAsPlugin extends Plugin {
 		// Register a command that can be invoked via hotkey
 		this.addCommand({
 			id: "configured-format",
-			name: "Configured format",
+			name: "Configured format", // This will read: "Paste Image As: Configured format"
 			callback: async () => {
 				try {
 					const clipboardItems = await navigator.clipboard.read();
