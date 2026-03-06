@@ -1,7 +1,7 @@
 {
 	"id": "paste-image-as",
 	"name": "Paste Image As",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"minAppVersion": "0.15.0",
 	"description": "Allows pasting images in a specific format.",
 	"author": "jffaust",
