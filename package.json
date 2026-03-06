@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-paste-image-as",
-	"version": "0.1.1",
-	"description": "Allows pasting images in a specific format",
+	"version": "0.1.2",
+	"description": "Allows pasting images JPEG or WebP format, with configurable quality settings.",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {

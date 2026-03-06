@@ -1,9 +1,9 @@
 {
 	"id": "paste-image-as",
 	"name": "Paste Image As",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"minAppVersion": "0.15.0",
-	"description": "Allows pasting images in a specific format.",
+	"description": "Allows pasting images JPEG or WebP format, with configurable quality settings.",
 	"author": "jffaust",
 	"authorUrl": "https://github.com/jffaust",
 	"fundingUrl": "https://ko-fi.com/jffaust",
