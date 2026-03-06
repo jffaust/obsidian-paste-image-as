@@ -1,24 +1,24 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import MyPlugin from "./main";
+import PasteImageAsPlugin from "./main";
 
-export interface MyPluginSettings {
+export interface PasteImageAsSettings {
 	targetFormat: "jpeg" | "webp";
 	jpegQuality: number;
 	webpQuality: number;
 	overrideDefaultPaste: boolean;
 }
 
-export const DEFAULT_SETTINGS: MyPluginSettings = {
+export const DEFAULT_SETTINGS: PasteImageAsSettings = {
 	targetFormat: "webp",
 	jpegQuality: 0.9,
 	webpQuality: 0.8,
 	overrideDefaultPaste: false,
 };
 
-export class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+export class PasteImageAsSettingTab extends PluginSettingTab {
+	plugin: PasteImageAsPlugin;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: PasteImageAsPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -29,11 +29,12 @@ export class SampleSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Target Format")
+			.setName("Target format")
 			.setDesc("The image format to convert pasted images into.")
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOption("jpeg", "JPEG")
+					// eslint-disable-next-line obsidianmd/ui/sentence-case
 					.addOption("webp", "WebP")
 					.setValue(this.plugin.settings.targetFormat)
 					.onChange(async (value) => {
@@ -45,7 +46,7 @@ export class SampleSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("JPEG Quality")
+			.setName("JPEG quality")
 			.setDesc(
 				"Compression quality for JPEG images (0 to 1). Higher is better quality but larger file size.",
 			)
@@ -61,8 +62,10 @@ export class SampleSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("WebP Quality")
+			// eslint-disable-next-line obsidianmd/ui/sentence-case
+			.setName("WebP quality")
 			.setDesc(
+				// eslint-disable-next-line obsidianmd/ui/sentence-case
 				"Compression quality for WebP images (0 to 1). Higher is better quality but larger file size.",
 			)
 			.addSlider((slider) =>
@@ -77,7 +80,7 @@ export class SampleSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Override Default Paste")
+			.setName("Override default paste")
 			.setDesc(
 				"If enabled, the default Obsidian paste behavior will be overridden to paste images in the configured format. Otherwise, you must use the explicit command.",
 			)

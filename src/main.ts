@@ -1,13 +1,13 @@
 import { Plugin, MarkdownView, Editor, MarkdownFileInfo } from "obsidian";
 import {
 	DEFAULT_SETTINGS,
-	MyPluginSettings,
-	SampleSettingTab,
+	PasteImageAsSettings,
+	PasteImageAsSettingTab,
 } from "./settings";
 import { ImageProcessor } from "./image-processor";
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class PasteImageAsPlugin extends Plugin {
+	settings: PasteImageAsSettings;
 	imageProcessor: ImageProcessor;
 
 	async onload() {
@@ -16,12 +16,12 @@ export default class MyPlugin extends Plugin {
 		this.imageProcessor = new ImageProcessor(this.app, this);
 
 		// Add settings tab
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new PasteImageAsSettingTab(this.app, this));
 
 		// Register a command that can be invoked via hotkey
 		this.addCommand({
-			id: "paste-image-as-configured-format",
-			name: "Paste image as configured format",
+			id: "configured-format",
+			name: "Configured format",
 			callback: async () => {
 				try {
 					const clipboardItems = await navigator.clipboard.read();
@@ -79,7 +79,7 @@ export default class MyPlugin extends Plugin {
 				const blob = item.getAsFile();
 				if (blob) {
 					evt.preventDefault();
-					this.imageProcessor.processImageBlob(blob);
+					await this.imageProcessor.processImageBlob(blob);
 					return;
 				}
 			}
@@ -108,7 +108,7 @@ export default class MyPlugin extends Plugin {
 				if (blob) {
 					// Only prevent default if we actually have an image blob to process
 					evt.preventDefault();
-					this.imageProcessor.processImageBlob(blob);
+					await this.imageProcessor.processImageBlob(blob);
 					return; // Exit after processing the first image
 				}
 			}
@@ -121,7 +121,7 @@ export default class MyPlugin extends Plugin {
 		this.settings = Object.assign(
 			{},
 			DEFAULT_SETTINGS,
-			await this.loadData(),
+			(await this.loadData()) as Partial<PasteImageAsSettings>,
 		);
 	}
 

@@ -1,11 +1,36 @@
-import { App, ItemView, MarkdownView, TFile, Notice } from "obsidian";
-import MyPlugin from "./main";
+import { App, ItemView, MarkdownView, TFile, Notice, Vault } from "obsidian";
+import PasteImageAsPlugin from "./main";
+
+interface VaultWithConfig extends Vault {
+	getConfig(key: string): unknown;
+}
+
+interface CanvasNode {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	file: TFile;
+}
+
+interface CanvasView extends ItemView {
+	canvas?: {
+		pointer?: { x: number; y: number };
+		createFileNode(options: {
+			pos: { x: number; y: number };
+			size: { height: number; width: number };
+			file: TFile;
+		}): CanvasNode;
+		addNode(node: CanvasNode): void;
+		requestSave(): void;
+	};
+}
 
 export class ImageProcessor {
-	plugin: MyPlugin;
+	plugin: PasteImageAsPlugin;
 	app: App;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: PasteImageAsPlugin) {
 		this.app = app;
 		this.plugin = plugin;
 	}
@@ -91,8 +116,7 @@ export class ImageProcessor {
 	): Promise<TFile | null> {
 		const fileName = `PastedImage_${this.getFormattedDate()}.${extension}`;
 
-		// @ts-ignore
-		let attachmentFolder = this.app.vault.getConfig("attachmentFolderPath");
+		let attachmentFolder = (this.app.vault as VaultWithConfig).getConfig("attachmentFolderPath") as string | undefined;
 
 		let folderPath: string = "";
 
@@ -160,8 +184,8 @@ export class ImageProcessor {
 			// TODO: Respect the user's Obsidian settings for inserting links (wikilinks vs markdown links, use absolute vs relative paths, etc.)
 			editor.replaceRange(`![[${filename}]]`, cursor);
 		} else if (activeView.getViewType() === "canvas") {
-			// @ts-ignore
-			const canvas = activeView.canvas;
+			const canvasView = activeView as CanvasView;
+			const canvas = canvasView.canvas;
 
 			if (!canvas) {
 				return;
