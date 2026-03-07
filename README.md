@@ -9,5 +9,5 @@ You can choose your prefered format, level of quality and also override the defa
 ![Settings](/docs/Settings.jpg)
 
 ## Manually installing the plugin
-
-- Copy over `main.js` and `manifest.json` to your vault `VaultFolder/.obsidian/plugins/paste-image-as/`.
+- Head over to [the latest release](https://github.com/jffaust/obsidian-paste-image-as/releases/latest) and download `main.js` and `manifest.json`
+- Copy those files to your vault `VaultFolder/.obsidian/plugins/paste-image-as/`.
