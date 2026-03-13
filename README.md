@@ -1,5 +1,7 @@
 # Obsidian Paste Image As
 
+![Header](/docs/header.jpeg)
+
 This is a simple plugin for [Obsidian](https://obsidian.md) that allows pasting images as JPEG or WebP.
 
 The plugin adds a command called `Paste Image As: Configured format` for which you can bind whatever hotkey you want.
